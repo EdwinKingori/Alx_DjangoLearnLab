@@ -84,6 +84,14 @@ def list_books(request):
     return render(request, 'relationship_app/list_books.html', context)
 
 
+class LoginView():
+    pass
+
+
+class LogoutView():
+    pass
+
+
 def LibraryDetailView(request, pk):
     library = Library.objects.get(id=pk)
     context = {
