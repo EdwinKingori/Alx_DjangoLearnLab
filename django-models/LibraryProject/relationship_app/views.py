@@ -15,7 +15,7 @@ from .models import Library, Book
 #     template_name = 'relationship_app/list_books.html'
 
 
-def bookList(request):
+def list_books(request):
     books = Book.objects.all()
     context = {
         'books': books
@@ -23,7 +23,7 @@ def bookList(request):
     return render(request, 'relationship_app/list_books.html', context)
 
 
-def libraryDetail(request, pk):
+def LibraryDetailView(request, pk):
     library = Library.objects.get(id=pk)
     context = {
         'library': library
