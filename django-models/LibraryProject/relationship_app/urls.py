@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import list_books, LibraryDetailView
+from .views import list_books, LibraryDetailView, register, login, logout
 
 
 app_name = 'relationship_app'
@@ -10,5 +10,9 @@ urlpatterns = [
     path('', list_books, name='list-books'),
     path('librarydetail/<int:pk>/',
          LibraryDetailView, name='library-detail'),
+    path('register', register, name='register'),
+    path('login', login, name='login'),
+    path('logout', logout, name='logout'),
+
 
 ]
