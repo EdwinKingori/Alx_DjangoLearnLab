@@ -14,6 +14,9 @@ urlpatterns = [
     # Logout view with custom template
     path('logout/', LogoutView.as_view(template_name='logout.html'), name='logout'),
 
+    # Register view
+    path('register/', views.register, name='register'),
+
 
     path('', list_books, name='list-books'),
     path('librarydetail/<int:pk>/',
