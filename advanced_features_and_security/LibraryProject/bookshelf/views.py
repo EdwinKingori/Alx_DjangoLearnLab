@@ -1,7 +1,7 @@
 from django import forms
 from django.shortcuts import render
 from . models import Book
-from . forms import ExampleForm
+from . forms import BookForm
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, get_object_or_404
 from . models import Book
@@ -26,9 +26,3 @@ def search_books(request):
     query = request.GET.get('q')
     books = Book.objects.filter(title__icontains=query)
     return render(request, 'book_list.html', {'books': books})
-
-
-class BookForm(forms.ModelForm):
-    class Meta:
-        model = Book
-        fields = ['title', 'author', 'published_date']
