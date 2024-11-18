@@ -132,6 +132,9 @@ SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'  # deny framing
 SECURE_CONTENT_TYPE_NOSNIFF = True  # enable NIME-Type Sniffing Prevention
 
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
 # Securing cookies over HTTPs:
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
