@@ -1,0 +1,5 @@
+#ignore the .env (environment variable) file that holds and secures DB's login info
+.env
+
+# Python compiled files
+*.pyc       
