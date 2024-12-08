@@ -8,7 +8,7 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user']
+    list_display = ['name', 'email']
 
 
 admin.site.register(Post, PostAdmin)
