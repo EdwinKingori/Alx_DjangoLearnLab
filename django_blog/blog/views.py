@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse_lazy
 from .models import Post, Profile, Comment, Tag
-from .forms import CustomUserCreationForm, ProfileForm, UserEmailForm
+from .forms import CustomUserCreationForm, ProfileForm, UserEmailForm, CommentForm
 # Create your views here.
 
 
@@ -71,9 +71,11 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-published_date']
 
+
 class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
+
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -83,7 +85,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def for_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-    
+
 
 class PostUpdateview(LoginRequiredMixin, UpdateView):
     model = Post
@@ -97,7 +99,7 @@ class PostUpdateview(LoginRequiredMixin, UpdateView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
-    
+
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
@@ -107,11 +109,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
-    
+
 
 class PostByTagListView(ListView):
     model = Post
-    template_name = 'blog/post_list_by_tag.html'  # Create this template
+    template_name = 'blog/post_list_by_tag.html'  
     context_object_name = 'posts'
 
     def get_queryset(self):
@@ -126,7 +128,7 @@ class PostByTagListView(ListView):
         context['tag'] = get_object_or_404(
             Tag, slug=self.kwargs.get('tag_slug'))
         return context
-        
+
 
 @login_required
 class CommentCreateView(LoginRequiredMixin, CreateView):
@@ -144,7 +146,9 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         # Redirect to the post detail page after comment creation
         return self.object.post.get_absolute_url()
 
-#configuring the search application
+# configuring the search application
+
+
 def search_posts(request):
     query = request.GET.get('q', '')
     results = Post.objects.filter(
