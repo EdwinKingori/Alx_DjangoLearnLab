@@ -155,10 +155,55 @@ def search_posts(request):
         Q(title__icontains=query) | Q(content__icontains=query) | Q(
             tags__name__icontains=query)
     ).distinct()
-    return render(request, 'blog/search_results.html', {'query': query, 'results': results})
+    context = {
+        {
+        'query': query,
+        'results': results
+        }
+    }
+    return render(request, 'blog/search_results.html', context)
 
 
 def posts_by_tag(request, tag):
     tag = get_object_or_404(Tag, slug=tag)
     posts = Post.objects.filter(tags__in=[tag])
     return render(request, 'blog/tag_posts.html', {'tag': tag, 'posts': posts})
+
+
+@login_required
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/add_comment.html'
+
+    def form_valid(self, form):
+        # Automatically assign the current post and user to the comment
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['post_id'])
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirect to the post detail page after comment creation
+        return self.object.post.get_absolute_url()
+
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/edit_comment.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/delete_comment.html'
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
