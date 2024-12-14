@@ -87,7 +87,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PostUpdateview(LoginRequiredMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     fields = ['title', 'content']
     template_name = "blog/post_update.html"
@@ -113,7 +113,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class PostByTagListView(ListView):
     model = Post
-    template_name = 'blog/post_list_by_tag.html'  
+    template_name = 'blog/post_list_by_tag.html'
     context_object_name = 'posts'
 
     def get_queryset(self):
@@ -130,7 +130,6 @@ class PostByTagListView(ListView):
         return context
 
 
-@login_required
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
@@ -146,45 +145,6 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         # Redirect to the post detail page after comment creation
         return self.object.post.get_absolute_url()
 
-# configuring the search application
-
-
-def search_posts(request):
-    query = request.GET.get('q', '')
-    results = Post.objects.filter(
-        Q(title__icontains=query) | Q(content__icontains=query) | Q(
-            tags__name__icontains=query)
-    ).distinct()
-    context = {
-        {
-        'query': query,
-        'results': results
-        }
-    }
-    return render(request, 'blog/search_results.html', context)
-
-
-def posts_by_tag(request, tag):
-    tag = get_object_or_404(Tag, slug=tag)
-    posts = Post.objects.filter(tags__in=[tag])
-    return render(request, 'blog/tag_posts.html', {'tag': tag, 'posts': posts})
-
-
-@login_required
-class CommentCreateView(LoginRequiredMixin, CreateView):
-    model = Comment
-    form_class = CommentForm
-    template_name = 'blog/add_comment.html'
-
-    def form_valid(self, form):
-        # Automatically assign the current post and user to the comment
-        form.instance.post = get_object_or_404(Post, pk=self.kwargs['post_id'])
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        # Redirect to the post detail page after comment creation
-        return self.object.post.get_absolute_url()
 
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -207,3 +167,27 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return self.request.user == comment.author
+
+
+
+
+# configuring the search application
+def search_posts(request):
+    query = request.GET.get('q', '')
+    results = Post.objects.filter(
+        Q(title__icontains=query) | Q(content__icontains=query) | Q(
+            tags__name__icontains=query)
+    ).distinct()
+    context = {
+        {
+            'query': query,
+            'results': results
+        }
+    }
+    return render(request, 'blog/search_results.html', context)
+
+
+def posts_by_tag(request, tag):
+    tag = get_object_or_404(Tag, slug=tag)
+    posts = Post.objects.filter(tags__in=[tag])
+    return render(request, 'blog/tag_posts.html', {'tag': tag, 'posts': posts})
