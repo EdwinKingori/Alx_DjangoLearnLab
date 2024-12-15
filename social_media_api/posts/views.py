@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 
 Like.objects.get_or_create(user=request.user, post=post)
+generics.get_object_or_404(Post, pk=pk)
 
 class PostPagination(PageNumberPagination):
     page_size = 10
