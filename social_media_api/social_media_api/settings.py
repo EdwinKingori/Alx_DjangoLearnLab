@@ -28,6 +28,7 @@ INSTALLED_APPS = [
 
     # apps
     'accounts',
+    'posts',
 
     # restful api
     'rest_framework',

@@ -3,13 +3,23 @@ from django.contrib.auth import get_user_model
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.authtoken import Token
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 from .serializers import CustomUserSerializer
 from .models import CustomUser
 
-permissions.IsAuthenticated
+
 # Create your views here.
+@api_view(['GET'])
+def direct_check_view(request):
+    permission = IsAuthenticated()
+
+    # Manually check permission
+    if not permission.IsAuthenticated(request, None):
+        return Response({"detail": "You must be logged in."}, status=401)
+
+    return Response({"message": "You are authenticated!"})
 
 
 class RegisterUser(APIView):
