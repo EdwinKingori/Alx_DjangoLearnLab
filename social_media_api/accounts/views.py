@@ -7,6 +7,8 @@ from rest_framework.authtoken import Token
 from rest_framework.permissions import IsAuthenticated
 from .serializers import CustomUserSerializer
 from .models import CustomUser
+
+permissions.IsAuthenticated
 # Create your views here.
 
 
