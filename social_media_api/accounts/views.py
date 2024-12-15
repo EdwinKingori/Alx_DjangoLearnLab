@@ -16,7 +16,6 @@ def direct_check_view(request):
     permission = IsAuthenticated()
 
     # Manually check permission
-    permissions.IsAuthenticated
     if not permission.IsAuthenticated:
         return Response({"detail": "You must be logged in."}, status=401)
 
