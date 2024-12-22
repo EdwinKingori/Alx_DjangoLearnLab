@@ -2,6 +2,7 @@ from .models import Post
 from django.shortcuts import render
 from django.shortcuts import render
 from .models import Post, Comment, Like
+from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework import viewsets, permissions
 # implimenting  pagination and filtering
@@ -12,8 +13,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
 
-Like.objects.get_or_create(user=request.user, post=post)
-generics.get_object_or_404(Post, pk=pk)
+# Like.objects.get_or_create(user=request.user, post=post)
+# generics.get_object_or_404(Post, pk=pk)
+
 
 class PostPagination(PageNumberPagination):
     page_size = 10
@@ -49,9 +51,6 @@ class FeedView(APIView):
             author__in=followed_users).order_by('-created_at')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
 
 
 class LikePostView(APIView):
@@ -107,4 +106,3 @@ class FeedView(APIView):
         posts = Post.objects.filter(author__in=following_users).order_by
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status=200)
-
